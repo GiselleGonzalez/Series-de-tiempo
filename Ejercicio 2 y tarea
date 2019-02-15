@@ -1,0 +1,36 @@
+base2<- read.csv("C:/Users/ALUMNO-D6/Documents/tasadedesocupacion.csv")
+base2ts<- ts(base2, start = 2006, end = 2016, frequency = 12)
+plot(base2ts)
+
+#La serie de tiempo nos permite conocer la estacionalidad y la aleatoriedad de la ST
+#Para descomponer una serie de tiempo se utiliza la función "descompose()" para descomponer un ST
+#Lo hace en tres componentes: componente estacional (S), tendencia(T) y componente aleatorio (e)
+
+tdes<-decompose(base2ts)
+
+#Para ver graficamente una descomposición de la ST en R existem 2 formas de graficar_ 
+#1. Directo de la serie de tiempo. 
+
+plot(decompose(base2ts))
+plot(tdesocadi)
+
+#Existen dos modelos, cuando no le ponemos nada por defaut R asume el modelo aditivo.
+#Para hacerlo con el modelo multiplicativo
+tdesmul <- decompose(base2ts,type="mult")
+plot(tdesmul)
+#Al usar el modelo multiplicativo incrementa su tendencia tambien incrementa su elemento estacional 
+#incrementa tendencia y estacional = multiplicativo
+
+#Al descomponer una serie ST tenemos diversos elementos como la estacioalidad, la tendencia y aleatoriedad, para eso
+#utilizamos la función names 
+names(tdesocadi) 
+#Con esto mandamos a llamar los elementos que tienen el objeto 
+tdes$seasonal
+
+#-------Tarea-------#
+s<-tdes$seasonal
+t<-tdes$trend
+e<-tdes$random
+
+y<- s+t+e
+y
