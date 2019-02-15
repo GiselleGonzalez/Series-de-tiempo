@@ -1,0 +1,28 @@
+base1<- read.csv("C://Users//ALUMNO-D6//Documents//pibmexico.csv")
+base1ts <- ts(base1,start=1961, end=2017, frequency=1)
+plot(base1ts[,2])
+plot(base1ts[,2], ylab = "% de crecimiento anual del PIB en México",xlab = "Años")
+require (datasets)
+plot(EuStockMarkets)
+ts.plot(EuStockMarkets,col=4:8,xlab="Años",ylab="Indices principales de las bolsas de Europa", main="Bolsas europeas") #Puedes ir cambiando de colores 1:4,4:8,8:16 etc
+legend("topleft",colnames(EuStockMarkets), lty=5,col=4:8,bty="n")
+#xlab,ylab, main es para dar nombre a los ejes y al título
+#bty para dar marco de la serie, lty es para líneas de la serie
+
+#-----------Ejercicio---------------
+#Bajar la tasa de desempleo del 2005 al 2017 de México
+#Importarla en R
+#convertirla en serie de tiempo
+#Graficar la serie de tiempo: con los siguientes argumentos: xlab, ylab,main, col
+#Insertar algunos comentarios dentro de la gráfica ej. Cuando hay crisis esta tasa se incrementa
+
+base2<- read.csv("C:/Users/ALUMNO-D6/Documents/tasadedesocupacion.csv")
+base2ts<- ts(base2, start = 2006, end = 2016, frequency = 12)
+ts.plot(base2ts,col=6, ylab="% de desocupación en México", xlab="Años", main="Desocupación")
+text(2009,5.5,"Crisis")
+#Text se usa para poner el texto en la gráfica
+
+#Comentario: Se puede observar en la gráfica un alto crecimiento en la tasa 
+#de desempleo a partir del año 2009 en la cual se mantiene en crecimiento hasta 
+#los últimos meses del mismo año. Este crecimiento se puede derivar del coste 
+#elevado de las empresas para contrar o las crisis económicas
