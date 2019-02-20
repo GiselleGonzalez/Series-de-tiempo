@@ -1,0 +1,25 @@
+america<- read.csv("C:/Users/ALUMNO-D6/Documents/Datos históricos AMXLcsv.csv")
+americats<- ts(america, start = 2018,end=2020,frequency = 120)
+plot.ts(americats)
+ts.plot(americats,ylab="precio de cierre",xlab="Años")
+desamx <- decompose(americats)
+names(desamx)
+plot(desamx)
+desamx$seasonal
+sinesta<-americats-desamx$seasonal
+sinesta
+plot(sinesta)
+######## COVARIANZA MANUAL ########
+plt<- read.csv("C:/Users/ALUMNO-D6/Documents/tasadede.csv")
+names(plt)
+x<-mean(plt$X10.2..Tasa.de.desocupación)
+y<-mean(plt$X10.5..Tasa.de.trabajo.asalariado)
+n<- length(plt$X10.2..Tasa.de.desocupación) #cuenta cuántos elementos tieme      
+covarmanual<-sum((plt$X10.2..Tasa.de.desocupación-x)*(plt$X10.5..Tasa.de.trabajo.asalariado-y))/(n-1)
+covarmanual
+cov(plt$X10.2..Tasa.de.desocupación,plt$X10.5..Tasa.de.trabajo.asalariado)
+
+######## CORRELACIÓN MANUAL ########
+correlacion<- covarmanual/(sqrt(var(plt$X10.2..Tasa.de.desocupación))*(sqrt(var(plt$X10.5..Tasa.de.trabajo.asalariado))))
+correlacion
+cor(plt$X10.2..Tasa.de.desocupación,plt$X10.5..Tasa.de.trabajo.asalariado)
