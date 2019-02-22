@@ -1,0 +1,48 @@
+install.packages("ggplot2")
+require (ggplot2) 
+#Paquetería para graficar
+install.packages("forecast")
+require (forecast)
+#Pronóstico
+install.packages("fpp2")
+require(fpp2)
+
+#Paqueterias que se usan para series de tiempo
+basenets<- ts(basenet$Close, start=2018, frequency = 252)
+plot(basenets)
+
+#Método de la media
+#meanf(st,h)
+media<- meanf(basenets,20)
+plot(media)
+
+#Método del ingenuo
+#naive(st,h)
+ingenuo<- naive(basenets,20)
+plot(ingenuo)
+ingenuo
+
+#Ingenuo estacional 
+#snaive(st,h) 
+ingestacional<- snaive(basenets,252)
+plot(ingestacional)
+
+#Método de la deriva
+#rwf(y, h, drift=TRUE)
+deri<- rwf(basenets,20, drift=TRUE)
+plot(deri)
+
+#---------------------
+#La función window nos permite cortar series en los periodos que quieras
+#Si no le pones nada en el start empieza desde el uno
+
+cerveza2<-window(ausbeer,start=1992, end=c(2007,4))
+
+#Gráfica algunos pronósticos
+autoplot(cerveza2)+
+autolayer(meanf(cerveza2,h=11), series="media",PI=FALSE)+
+  autolayer(naive(cerveza2, h=11),series="ingenuo", PI=FALSE) + 
+  autolayer(snaive(cerveza2, h=11),series = "ingenuo estacional", PI=FALSE)+
+  autolayer(rwf(cerveza2, h=11, drift = T), series="deriva",PI=FALSE)+
+  ggtitle("Pronósticos de producción cerveza") + xlab("Año") + 
+  ylab("miles de litros") + guides(colour=guide_legend(title = "pronóstico"))
