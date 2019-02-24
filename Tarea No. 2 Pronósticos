@@ -1,0 +1,45 @@
+install.packages("ggplot2")
+install.packages("forecast")
+install.packages("fpp2")
+require(ggplot2)
+require(forecast)
+require(fpp2)
+
+TCts<- ts(TipodeCambio, start=2016, frequency = 252)
+plot(TCts)
+
+#Método de la media
+media<- meanf(TCts,30)
+plot(media)
+
+#Método del ingenuo
+mingenuo<- naive(TCts,30)
+plot(mingenuo)
+
+#Ingenuo estacional 
+ingesta<- snaive(TCts,30)
+plot(ingesta)
+
+#Método de la deriva
+deriva<- rwf(TCts,30, drift=TRUE)
+plot(deriva)
+
+#Gráfica total
+autoplot(TCts)+
+  autolayer(meanf(TCts,h=10), series="M.Media",PI=FALSE)+
+  autolayer(naive(TCts, h=10),series="M.Ingenuo", PI=FALSE) + 
+  autolayer(snaive(TCts, h=10),series = "M.Ingenuo estacional", PI=FALSE)+
+  autolayer(rwf(TCts, h=10, drift = T), series="M.Deriva",PI=FALSE)+
+  ggtitle("Pronósticos de tipo de cambio") + xlab("Año") + 
+  ylab("Tipo de cambio") + guides(colour=guide_legend(title = "Métodos de pronóstico"))
+
+#Interpretación: 
+#Al hablar de series de tiempo de tipo económico y financiero, 
+#el mejor pronótico es el método del ingenuo ya que se utiliza 
+#para pronósticos de corto plazo debido a que son muy lineales. 
+#El método del ingenuo realiza previsiones con base en el valor 
+#de la última observación.
+#Se puede observar en la gráfica del método del ingenuo que se tiene
+#un intervalo en donde se puede mover nuestro valor del tipo de cambio, 
+#lo cuál nos dá una previsión amplia del siguiente valor que tomará 
+#nuestra variable.
