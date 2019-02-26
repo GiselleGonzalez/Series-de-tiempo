@@ -1,0 +1,99 @@
+install.packages("ggplot")
+install.packages("fpp2")
+install.packages("forecast")
+require(ggplot2)
+require(fpp2)
+require(forecast)
+
+# Ejercicio en clase "Autocorrelación"
+
+help(goog200)
+pr <- naive(goog200)
+names(pr)
+rs <- residuals(naive(goog200))
+autoplot(goog200)
+autoplot(rs)
+
+# 1.Histograma
+gghistogram(rs)+ ggtitle("Histograma de residuales")
+
+# 2.Prueba de correlación
+ggAcf(rs)
+
+#Si sobrepasa la linea azul quiere decir que los datos están correlacionados.
+#Si no hay datos correlacionados entonces tenemos una serie de ruido blanco
+#(garantizar que nuestro pronóstico es bueno)
+
+#---------------------------------------------------------------------------------------
+
+# EJERCICIO 1: Población histórica de México de 1960 a 2017
+poblacion <- read.csv("C:/Users/Giselle/Documents/Poblacionhistorica.csv")
+pobts <- ts(poblacion, start = 1960, frequency = 1)
+plot(pobts)
+# La población histórica total de México para los años 1960 al 2017 tiene una tendencia
+# de crecimiento,teniendo un decremento a principios de los años 90's.
+
+
+# 1. Aplicación de método de pronóstico
+pometodo <- rwf(pobts,20, drift = TRUE)
+plot(pometodo)
+#El método utilizado para el pronóstico de la serie de tiempo es el de la deriva
+#pues la población no tiende a disminuir o aumentar drásticamente a menos que 
+#ocurran sucesos como:guerras, epidemias, pandemias, etc.
+
+
+# 2. Análisis de residuales
+presiduales <- residuals(rwf(pobts,30, drift = TRUE))
+autoplot(pobts)
+autoplot(presiduales)
+#Como se puede observar en el análisis de residuales, tenemos un incremento
+#muy importante de los residuales entre los años 90's, si observamos la gráfica
+#original, podemos ver que es el  momento en donde la población disminuye en mayor cantidad.
+
+
+# 3. Histograma
+gghistogram(presiduales)+ ggtitle("Histograma de residuales")
+#Presentando el histograma de residuales no se tiene una distribución normal, por lo que
+#los datos no se distribuyen normalmente.
+
+
+# 4. Prueba de correlación
+ggAcf(presiduales)
+#Para la prueba de correlación tenemos datos autocorrelacionados.
+
+
+#-----------------------------------------------------------------------------------------------------------
+
+# EJERCICIO 2: Precio de cierre de acciones de Televisa, diaria. 
+
+televisa <- read.csv("C:/Users/Giselle/Downloads/televisahistoricos.csv")
+datosts <- ts(televisa, start = 2018, frequency = 252)
+plot(datosts)
+#Se muestran los datos históricos de acciones de Televisa diarios para los años
+#2018 a 2019, los cuales presentan movimientos cíclicos. Las acciones tuvieron 
+#una alza desde Febrero a Abril del 2018, pasando desde ese punto una tendencia 
+#a la baja. 
+
+# 1. Aplicación de método de pronóstico
+tmeto <- naive(datosts,20)
+plot(tmeto)
+#El método utilizado para el pronóstico de la serie de tiempo es la del ingeuo
+#debido a que se estamos pronosticando serie de tiempo de tipo financiero y a 
+#corto plazo. 
+
+
+# 2. Análisis de residuales
+tlvresi <- residuals(naive(datosts,20))
+autoplot(datosts)
+autoplot(tlvresi)
+#Al analizar el gráfico observamos que la distribución de los residuales no tiene 
+#una varianza constante, tiene muchos incrementos y decrementos en sus residuales.
+
+# 3. Histograma
+gghistogram(tlvresi)+ ggtitle("Histograma de residuales")
+#Presentando el histograma de residuales se tiene una distribución normal sesgada 
+#a la derecha, por lo que los datos se concentran hacia la derecha.
+
+# 4. Prueba de correlación
+ggAcf(tlvresi)
+#Se tienen datos no autocorrelacionados
