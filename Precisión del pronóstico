@@ -1,0 +1,51 @@
+install.packages("fpp2")
+install.packages("forecast")
+require(fpp2)
+require(forecast)
+
+pibm <- read.csv("C:/Users/ALUMNO-D6/Documents/pibmexico2.csv")
+pibts <- ts(pibm, start =1961 ,frequency = 1)
+
+#Calculos basados en el suavisado exponencial simple
+modelo1 <- ses(pibts, alpha=0.1, initial = "simple", h=8)
+modelo2 <- ses(pibts, alpha=0.3, initial = "simple", h=8)
+modelo3 <- ses(pibts, alpha=0.9, h=8)
+
+#Grafica: datos reales, es deir te grafica tus datos originales "pibts"
+#Linea de "o" por eso salen los circulitos 
+plot(modelo1,ylab = "pib",xlab = "año", main = "pib", type = "o")
+#Agregar una linea del modelo ajustado 
+lines(fitted(modelo1), col="green", type="o")
+lines(fitted(modelo2), col="pink", type="o")
+lines(fitted(modelo3), col="blue", type="o")
+
+legend("topleft", lty=1, col = c(1,"green","pink","blue"),c("data", expression(alpha == 0.1),expression(alpha==0.3),expression(alpha==0.9)),pch = 1)
+
+#El 1 es el color negro que te está graficando con los datos reales del modelo
+#lines(modelo3$fitted, col="blue", type="o")
+# SES Modelo de Suavizado exponencial simple con inicial=simple
+# Por default es simple 
+# Entre más cercano al 1 el suavizado es más bonito
+# Nos quedamos con el alpha de 0.9 porque es el que más se acerca a los valores originales
+
+
+# E J E R C I C I O
+
+# Con la función de window separen la serie del PIB en datos de entrenamiento y datos de prueba (20%)
+# Graficar los modelos solo en lo que corresponde a los datos de prueba. 
+
+datosentre <-window(pibts,start=1992, end=c(2006,1))
+datosprueba <- window(pibts,start=2006, end=c(2017,1))
+
+modelo11 <- ses(datosprueba, alpha=0.1, initial = "simple", h=8)
+modelo22 <- ses(datosprueba, alpha=0.3, initial = "simple", h=8)
+modelo33 <- ses(datosprueba, alpha=0.9, h=8)
+
+plot(modelo11,ylab = "pib",xlab = "año", main = "PIB México", type = "o")
+
+lines(fitted(modelo11), col="green", type="o")
+lines(fitted(modelo22), col="pink", type="o")
+lines(fitted(modelo33), col="blue", type="o")
+
+legend("topleft", lty=1, col = c(1,"green","pink","blue"),c("data", expression(alpha == 0.1),expression(alpha==0.3),expression(alpha==0.9)),pch = 1)
+
