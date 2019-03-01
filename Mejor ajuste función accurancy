@@ -1,0 +1,30 @@
+install.packages("ggplot2")
+require (ggplot2) 
+#Paquetería para graficar
+install.packages("forecast")
+require (forecast)
+#Pronóstico
+install.packages("fpp2")
+require(fpp2)
+
+cerveza <-window(ausbeer,start=1992, end=c(2007,4))
+dt1<-meanf(cerveza,h=11)
+dt2 <-naive(cerveza, h=11)
+dt3 <-snaive(cerveza, h=11)
+dt4<- rwf(cerveza, h=11, drift = T)
+#Gráfica algunos pronósticos
+autoplot(window(ausbeer,start=1992))+
+  autolayer(dt1, series="media",PI=FALSE)+
+  autolayer(dt2,series="ingenuo", PI=FALSE) + 
+  autolayer(dt3,series = "ingenuo estacional", PI=FALSE)+
+  autolayer(dt4, series="deriva",PI=FALSE)+
+  ggtitle("Pronósticos de producción cerveza") + xlab("Año") + 
+  ylab("miles de litros") + guides(colour = guide_legend(title = "pronóstico"))
+
+cerveza <-window(ausbeer, start = 2008)
+accuracy(dt1, cerveza)
+accuracy(dt2, cerveza)
+accuracy(dt3, cerveza)
+accuracy(dt4, cerveza)
+#Dar los errores del pronóstico 
+#El mejor pronóstico de acuerdo a la gráfica y los resultados es el ingenuo estacional 
