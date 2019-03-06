@@ -1,0 +1,201 @@
+install.packages("ggplot")
+install.packages("fpp2")
+install.packages("forecast")
+require(ggplot2)
+require(fpp2)
+require(forecast)
+
+#------------------ Serie de tiempo: con estacionalidad ------------------
+
+disney <- read.csv("C:/Users/Giselle/Documents/Disney.csv")
+dsts <- ts(disney, start = 2017, end = 2019, frequency = 252)
+
+# 1. Función decompose
+
+    dsdc <- decompose(dsts)
+    plot(dsdc)
+
+# 2. Pronósticos simples 
+
+    # Método de la media
+    m1 <- meanf(dsts, 20) 
+    plot(m1,20)
+    
+    # Método del ingenuo
+    ing1 <- naive(dsts,20)
+    plot(ing1)
+    
+    # Método del ingenuo estacional
+    inge1 <- snaive(dsts,50)
+    plot(inge1)
+    
+    #Método de la deriva
+    der1<- rwf(dsts,20, drift=TRUE)
+    plot(der1)    
+
+# 3. Suavizado exponencial simple
+    
+    dtprueba1 <- window(dsts, start = c(2018,156), end = 2019)
+    
+    md1 <- ses(dtprueba1, alpha = 0.1,initial = "simple", h=8)
+    md2 <- ses(dtprueba1, alpha = 0.3,initial = "simple", h=8)
+    md3 <- ses(dtprueba1, alpha = 0.9, h=8)
+    plot(md3, ylab = "Precio de las acciones",xlab = "Año", main = "Acciones: Disney", type = "o")
+    lines(fitted(md1), col="green", type="o")
+    lines(fitted(md2), col="pink", type="o")
+    lines(fitted(md3), col="blue", type="o")
+    legend("topleft", lty=1, col = c(1,"green","pink","blue"),c("data", expression(alpha == 0.1),expression(alpha==0.3),expression(alpha==0.9)),pch = 1)
+
+
+# 4. Errores de pronóstico
+    
+    dd <-window(dsts,start=2017, end = 2019)
+    dt1<-meanf(dd,h=11)
+    dt2 <-naive(dd, h=11)
+    dt3 <-snaive(dd, h=11)
+    dt4<- rwf(dd, h=11, drift = T)
+    
+    autoplot(window(dsts,start=2018))+
+      autolayer(dt1, series="media",PI=FALSE)+
+      autolayer(dt2,series="ingenuo", PI=FALSE) + 
+      autolayer(dt3,series = "ingenuo estacional", PI=FALSE)+
+      autolayer(dt4, series="deriva",PI=FALSE)+
+      ggtitle("Pronósticos de producción cerveza") + xlab("Año") + 
+      ylab("miles de litros") + guides(colour = guide_legend(title = "pronóstico"))
+    
+    dd <-window(dsts, start = 2017)
+    accuracy(dt1, disneyts)
+    accuracy(dt2, disneyts)
+    accuracy(dt3, disneyts)
+    accuracy(dt4, disneyts)
+    
+#------------------ Serie de tiempo: con tendencia ------------------
+    
+    mortalidad <- read.csv("C:/Users/Giselle/Documents/Mortalidad en México.csv")
+    mtts <- ts(mortalidad, start = 1994, end = 2015, frequency = 1)
+    plot(mtts)
+    
+    # 1. Función decompose
+    
+    mtdc <- decompose(mtts)
+    plot(mtdc)
+    
+    # 2. Pronósticos simples 
+    
+    # Método de la media
+    m2 <- meanf(mtts, 5) 
+    plot(m2)
+    
+    # Método del ingenuo
+    ing2 <- naive(mtts,5)
+    plot(ing2)
+    
+    # Método del ingenuo estacional
+    inge2 <- snaive(mtts,5)
+    plot(inge2)
+    
+    #Método de la deriva
+    der2<- rwf(mtts,5, drift=TRUE)
+    plot(der2)    
+    
+    # 3. Suavizado exponencial simple
+    
+    dtprueba2 <- window(mtts, start = 2010, end = 2015)
+    
+    md1 <- ses(dtprueba2, alpha = 0.1,initial = "simple", h=8)
+    md2 <- ses(dtprueba2, alpha = 0.3,initial = "simple", h=8)
+    md3 <- ses(dtprueba2, alpha = 0.9, h=8)
+    plot(md3, ylab = "Precio de las acciones",xlab = "Año", main = "Acciones: Disney", type = "o")
+    lines(fitted(md1), col="green", type="o")
+    lines(fitted(md2), col="pink", type="o")
+    lines(fitted(md3), col="blue", type="o")
+    legend("topleft", lty=1, col = c(1,"green","pink","blue"),c("data", expression(alpha == 0.1),expression(alpha==0.3),expression(alpha==0.9)),pch = 1)
+    
+    
+    # 4. Errores de pronóstico
+    
+    dd2 <-window(mtts,start=1994, end = 2015)
+    dt01<-meanf(dd2,h=11)
+    dt02 <-naive(dd2, h=11)
+    dt03 <-snaive(dd2, h=11)
+    dt04<- rwf(dd2, h=11, drift = T)
+    
+    autoplot(window(mtts,start=1994))+
+      autolayer(dt01, series="media",PI=FALSE)+
+      autolayer(dt02,series="ingenuo", PI=FALSE) + 
+      autolayer(dt03,series = "ingenuo estacional", PI=FALSE)+
+      autolayer(dt04, series="deriva",PI=FALSE)+
+      ggtitle("Pronósticos de producción cerveza") + xlab("Año") + 
+      ylab("miles de litros") + guides(colour = guide_legend(title = "pronóstico"))
+    
+    dd2 <-window(mtts, start = 1994)
+    accuracy(dt01, mtts)
+    accuracy(dt02, mtts)
+    accuracy(dt03, mtts)
+    accuracy(dt04, mtts)
+
+#------------------ Serie de tiempo: sin tendencia ------------------
+    
+    inflacion <- read.csv("C:/Users/Giselle/Documents/Inflación.csv")
+    ints <- ts(inflacion, start = 1970, end = 2017, frequency = 1)
+    plot(ints)
+    
+    # 1. Función decompose
+    #No se puede usar la función descompuse debido a que los datos son anuales
+    indc <- decompose(ints)
+    plot(indc)
+    
+    # 2. Pronósticos simples 
+    
+    # Método de la media
+    m3 <- meanf(ints, 10) 
+    plot(m3)
+    
+    # Método del ingenuo
+    ing3 <- naive(ints,10)
+    plot(ing3)
+    
+    # Método del ingenuo estacional
+    inge3 <- snaive(ints,10)
+    plot(inge3)
+    
+    #Método de la deriva
+    der3<- rwf(ints,10, drift=TRUE)
+    plot(der3)    
+    
+    # 3. Suavizado exponencial simple
+    
+    dtprueba3 <- window(ints, start = 2010, end = 2017)
+    
+    md001 <- ses(dtprueba3, alpha = 0.1,initial = "simple", h=8)
+    md002 <- ses(dtprueba3, alpha = 0.3,initial = "simple", h=8)
+    md003 <- ses(dtprueba3, alpha = 0.9, h=8)
+    plot(md003, ylab = "Precio de las acciones",xlab = "Año", main = "Acciones: Disney", type = "o")
+    lines(fitted(md001), col="green", type="o")
+    lines(fitted(md002), col="pink", type="o")
+    lines(fitted(md003), col="blue", type="o")
+    legend("topleft", lty=1, col = c(1,"green","pink","blue"),c("data", expression(alpha == 0.1),expression(alpha==0.3),expression(alpha==0.9)),pch = 1)
+    #El método más efectivo es con un alpha de 0.9 
+    
+    # 4. Errores de pronóstico
+    
+    dd3 <-window(ints,start=2010, end = 2017)
+    dt001<-meanf(dd3,h=11)
+    dt002 <-naive(dd3, h=11)
+    dt003 <-snaive(dd3, h=11)
+    dt004<- rwf(dd3, h=11, drift = T)
+    
+    autoplot(window(ints,start=1970))+
+      autolayer(dt001, series="media",PI=FALSE)+
+      autolayer(dt002,series="ingenuo", PI=FALSE) + 
+      autolayer(dt003,series = "ingenuo estacional", PI=FALSE)+
+      autolayer(dt004, series="deriva",PI=FALSE)+
+      ggtitle("Pronósticos de producción cerveza") + xlab("Año") + 
+      ylab("miles de litros") + guides(colour = guide_legend(title = "pronóstico"))
+    
+    dd3 <-window(ints, start = 1970)
+    accuracy(dt001, ints)
+    accuracy(dt002, ints)
+    accuracy(dt003, ints)
+    accuracy(dt004, ints)
+    
