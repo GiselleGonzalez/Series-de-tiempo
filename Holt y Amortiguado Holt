@@ -1,0 +1,86 @@
+require(fpp2)
+
+# MÉTODO DE HOLT
+a1 <- window(ausair, start=1990)
+prono <- holt(a1, h=5)
+plot(prono)
+
+# MÉTODOS DE TENDENCIA AMORTIGUADA
+prono1 <- holt(a1, h=15)
+prono2 <- holt(a1, damped = TRUE, phi = 0.9, h=15)
+  # MÉTODO SES
+mode3 <- ses(a1, alpha=0.9, h=8)
+autoplot(a1)+
+    autolayer(prono1, series = "Holt", PI = FALSE) + 
+    autolayer(prono2, series = "Amortiguado Holt", PI = FALSE) + 
+    autolayer(mode3, series = "SES", PI = FALSE)
+    ggtitle("Pronósticos") + xlab("Año") + ylab("Pasajeros") + 
+    guides(colour = guide_legend(title = "Pronóstico"))
+
+help(tsCV)
+# Con el nombre del pronóstico o ses/holt/damped
+e1 <- tsCV(a1, ses, h=1)
+e1
+e2 <- tsCV(a1, holt, h=1)
+e2
+e3 <- tsCV(a1, holt, damped = TRUE, h=1)
+e3
+
+#Prueba de los errores del pronóstico
+# MSE (también obtenido con el accurancy)
+mean(e1^2, na.rm = TRUE) 
+mean(e2^2, na.rm = TRUE)
+mean(e3^2, na.rm = TRUE)
+# Me quedaría con el método Holt
+# na.rm es para eliminar los na de los datos na- row move
+
+# MAE (valor absoluro de la media)
+mean(abs(e1), na.rm = TRUE)
+mean(abs(e2), na.rm = TRUE)
+mean(abs(e3), na.rm = TRUE)
+# Me quedaría con el método Holt
+
+##############################################################################################
+
+# MÉTODO DE HOLT
+dat <- read.csv("C:/Users/ALUMNO-D6/Downloads/PIB historico méxico2.csv")
+dts <- ts(dat, start = 1980, frequency = 1)
+# MÉTODO DE HOLT
+a2 <- window(dts, start=1980)
+pronos <- holt(a2, h=5)
+plot(pronos)
+
+# MÉTODOS DE TENDENCIA AMORTIGUADA
+pronos1 <- holt(a2, h=15)
+pronos2 <- holt(a2, damped = TRUE, phi = 0.9, h=15)
+# MÉTODO SES
+pronos3 <- ses(a2, alpha=0.9, h=8)
+autoplot(a2)+
+  autolayer(pronos1, series = "Holt", PI = FALSE) + 
+  autolayer(pronos2, series = "Amortiguado Holt", PI = FALSE) + 
+  autolayer(pronos3, series = "SES", PI = FALSE)
+ggtitle("Pronósticos") + xlab("Año") + ylab("Pasajeros") + 
+  guides(colour = guide_legend(title = "Pronóstico"))
+
+help(tsCV)
+# Con el nombre del pronóstico o ses/holt/damped
+e01 <- tsCV(a2, ses, h=1)
+e01
+e02 <- tsCV(a2, holt, h=1)
+e02
+e03 <- tsCV(a2, holt, damped = TRUE, h=1)
+e03
+
+#Prueba de los errores del pronóstico
+# MSE (también obtenido con el accurancy)
+mean(e01^2, na.rm = TRUE) 
+mean(e02^2, na.rm = TRUE)
+mean(e03^2, na.rm = TRUE)
+# Me quedaría con el método SES 
+# na.rm es para eliminar los na de los datos na- row move
+
+# MAE (valor absoluro de la media)
+mean(abs(e01), na.rm = TRUE)
+mean(abs(e02), na.rm = TRUE)
+mean(abs(e03), na.rm = TRUE)
+# Me quedaría con el método SES
