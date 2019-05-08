@@ -1,0 +1,53 @@
+install.packages("dplyr")
+# Raíz unitaria para ver si es estacionaria
+# install.packages("zoo")
+
+library(fpp2)
+library(tseries)
+library(dplyr)
+
+autoplot(gas)
+adf.test(gas)
+# p-value = 0.2764 por lo tanto se tiene que ser una diferenciación 
+auto.arima(gas)
+# ARIMA(2,1,1)(0,1,1)[12]  serie mensual 
+
+gas1 <- diff(gas)
+autoplot(gas1)
+# De nuevo la raíz unitaria
+adf.test(gas1)
+# Grafica todas las gráfica
+gas1 %>% ggtsdisplay()
+
+# Aplicamos auto arima para conocer los valores p,d,q
+aa <- auto.arima(gas)
+aa
+
+# Sinuoso o que decaiga 
+# Estacional (P,D,Q), veremos si es significativo nuestro valor 12 
+# comprar dos auto arima con el valor de ACs, el menor es el mejor 
+
+# Valores estacionales 
+# 1 Propuestas de primer valores (hacerlo manual)
+gas %>% 
+  Arima(order=c(1,1,1),seasonal=c(1,1,1))
+# Para comparar: AICc=8168.6 
+
+# 2 Propuestas de primer valores (hacerlo manual)
+gas %>% 
+  Arima(order=c(1,1,1),seasonal=c(0,1,1))
+# Para comparar: AICc=8166.56
+
+# Esta es para la parte no estacional (p,d,q)
+# sinuoso o decae exponencialmente - asignarle valores a p y q (tu lo propones)
+# PACF determina el q - determinas porque es sinuoso.
+
+# Esta es para la parte estacional (P,D,Q)
+# Si en cada periodo es significativo se pone el 1 para el P 
+# Valores de retardo: El PACF determina el Q tienes que ver los retardos, la misma lógica que el P,
+# que sean significativos el retardo estacional
+
+# T A R E A 
+# 2 SERIES ESTACIONALES
+# 2 SERIES NO ESTACIONALES
+# SIN USAR AUTO.ARIMA APLICAR LAS FUNCIONES ARIMA
